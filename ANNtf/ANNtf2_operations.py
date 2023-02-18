@@ -22,6 +22,8 @@ import numpy as np
 import ANNtf2_globalDefs
 import math
 
+debugSingleLayerNetwork = False
+
 
 #if(useBinaryWeights) or if(generateFirstLayerSDR)
 	
@@ -39,7 +41,10 @@ def generateParameterNameNetwork(networkIndex, l, arrayName):
 def generateParameterNameNetworkSkipLayers(networkIndex, lprior, l, arrayName):	#support skip layers
 	parameterName = "n" + str(networkIndex) + "lprior" + str(lprior) + "l" + str(l) + arrayName
 	return parameterName
-
+def generateParameterNameNetworkCurrentLayer(networkIndex, arrayName):
+	parameterName = "n" + str(networkIndex) + arrayName
+	return parameterName
+	
 #support sequential inputs:		
 #used by SANI:
 def generateParameterNameSeq(l, s, arrayName):
@@ -116,12 +121,6 @@ def generateTFtrainDataFromNParrays(train_x, train_y, shuffleSize, batchSize):
 	trainData = generateTFtrainDataFromTrainDataUnbatched(trainDataUnbatched, shuffleSize, batchSize)
 	return trainData
 
-def generateTFtrainDataUnbatchedFromNParrays(train_x, train_y):
-	#print("train_x.shape = ", train_x.shape)
-	#print("train_y.shape = ", train_y.shape)
-	trainDataUnbatched = tf.data.Dataset.from_tensor_slices((train_x, train_y))
-	return trainDataUnbatched
-
 #generate a single batch;
 def generateTFbatch(test_x, test_y, batchSize):
 	xShape = list(test_x.shape)
@@ -139,7 +138,12 @@ def generateTFbatch(test_x, test_y, batchSize):
 	#print("testBatchX = ", testBatchX)
 	#print("testBatchY = ", testBatchY)
 	return testBatchX, testBatchY
-
+	
+def generateTFtrainDataUnbatchedFromNParrays(train_x, train_y):
+	#print("train_x.shape = ", train_x.shape)
+	#print("train_y.shape = ", train_y.shape)
+	trainDataUnbatched = tf.data.Dataset.from_tensor_slices((train_x, train_y))
+	return trainDataUnbatched
 
 def generateTFtrainDataFromTrainDataUnbatched(trainDataUnbatched, shuffleSize, batchSize):
 	trainData = trainDataUnbatched.repeat().shuffle(shuffleSize).batch(batchSize).prefetch(1)	#do not repeat
@@ -147,18 +151,21 @@ def generateTFtrainDataFromTrainDataUnbatched(trainDataUnbatched, shuffleSize, b
 
 
 def defineNetworkParameters(num_input_neurons, num_output_neurons, datasetNumFeatures, dataset, numberOfNetworks, generateLargeNetwork=False, generateNetworkStatic=False, generateDeepNetwork=False):
-	if(generateLargeNetwork):
-		firstHiddenLayerNumberNeurons = num_input_neurons*3
+	if(debugSingleLayerNetwork):
+		n_h, numberOfLayers, numberOfNetworks, datasetNumClasses = defineNetworkParametersANNsingleLayer(num_input_neurons, num_output_neurons, datasetNumFeatures, dataset, trainMultipleFiles, numberOfNetworks)
 	else:
-		firstHiddenLayerNumberNeurons = num_input_neurons
-	if(generateDeepNetwork):
-		numberOfLayers = 6
-	else:
-		numberOfLayers = 2
-	n_h, numberOfLayers, numberOfNetworks, datasetNumClasses = defineNetworkParametersDynamic(num_input_neurons, num_output_neurons, datasetNumFeatures, dataset, numberOfNetworks, numberOfLayers, firstHiddenLayerNumberNeurons, generateNetworkStatic)
+		if(generateLargeNetwork):
+			firstHiddenLayerNumberNeurons = num_input_neurons*3
+		else:
+			firstHiddenLayerNumberNeurons = num_input_neurons
+		if(generateDeepNetwork):
+			numberOfLayers = 6
+		else:
+			numberOfLayers = 2
+		n_h, numberOfLayers, numberOfNetworks, datasetNumClasses = defineNetworkParametersDynamic(num_input_neurons, num_output_neurons, datasetNumFeatures, dataset, numberOfNetworks, numberOfLayers, firstHiddenLayerNumberNeurons, generateNetworkStatic)
 	return n_h, numberOfLayers, numberOfNetworks, datasetNumClasses
 
-def defineNetworkParametersANNsingleLayer(num_input_neurons, num_output_neurons, datasetNumFeatures, dataset, numberOfNetworks):
+def defineNetworkParametersANNsingleLayer(num_input_neurons, num_output_neurons, datasetNumFeatures, dataset, trainMultipleFiles, numberOfNetworks):
 
 	n_x = num_input_neurons #datasetNumFeatures
 	n_y = num_output_neurons  #datasetNumClasses
@@ -260,3 +267,38 @@ def convertSignOutputToBool(xSignOutput):
 	xSignOutput = tf.maximum(xSignOutput, 0)
 	xBool = tf.dtypes.cast(xSignOutput, dtype=tf.dtypes.bool)
 	return xBool
+
+#note if updated_value isVector, updated_value should be provided in 2D format
+def modifyTensorRowColumn(a, isRow, index, updated_value, isVector):
+	
+	if(not isRow):
+		a = tf.transpose(a)
+		if(isVector):
+			updated_value = tf.transpose(updated_value)
+	
+	if(index == 0):
+		if(isVector):
+			values = [updated_value, a[index+1:]]
+		else:
+			values = [[updated_value], a[index+1:]]
+	elif(index == a.shape[0]-1):
+		if(isVector):
+			values = [a[:index], updated_value]
+		else:
+			values = [a[:index], [updated_value]]
+	else:
+		if(isVector):
+			values = [a[:index], updated_value, a[index+1:]]
+		else:
+			values = [a[:index], [updated_value], a[index+1:]]
+	
+	#print("index = ", index)
+	#print("values = ", values)
+	#print("updated_value = ", updated_value)
+			
+	a = tf.concat(axis=0, values=values)
+			
+	if(not isRow):
+		a = tf.transpose(a)
+		
+	return a
