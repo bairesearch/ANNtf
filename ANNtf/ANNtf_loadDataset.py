@@ -1,4 +1,4 @@
-"""ANNtf2_loadDataset.py
+"""ANNtf_loadDataset.py
 
 # Author:
 Richard Bruce Baxter - Copyright (c) 2020-2022 Baxter AI (baxterai.com)
@@ -7,10 +7,10 @@ Richard Bruce Baxter - Copyright (c) 2020-2022 Baxter AI (baxterai.com)
 MIT License
 
 # Installation:
-see ANNtf2.py
+see ANNtf_main.py
 
 # Usage:
-see ANNtf2.py
+see ANNtf_main.py
 
 # Description:
 ANNtf load dataset
@@ -136,10 +136,10 @@ import csv
 import tensorflow as tf
 import numpy as np
 from numpy import genfromtxt
-import ANNtf2_globalDefs
-#from nltk import tokenize	#required for ANNtf2_loadDataset loadDatasetType4 only
+import ANNtf_globalDefs
+#from nltk import tokenize	#required for ANNtf_loadDataset loadDatasetType4 only
 import re
-import ANNtf2_operations
+import ANNtf_operations
 
 
 datasetFolderRelative = "datasets"
@@ -154,7 +154,7 @@ datasetType1alreadyNormalised = True	#if True, assume that the dataset includes 
 datasetType2alreadyNormalised = False	#if True, assume that the dataset includes values between 0 and 1 only
 datasetType3alreadyNormalised = True	#if True, assume that the dataset includes values between 0 and 1 only
 
-numberOfFeaturesPerWord = 53	#last feature identifies word as out of sentence padding (out of sentence padding is not expected by loadDatasetType3 as each row only contains data of a specific sentence length; out of sentence padding will be applied by ANNtf2_loadDataset after data is read)
+numberOfFeaturesPerWord = 53	#last feature identifies word as out of sentence padding (out of sentence padding is not expected by loadDatasetType3 as each row only contains data of a specific sentence length; out of sentence padding will be applied by ANNtf_loadDataset after data is read)
 optimiseFeedLength = True
 if(optimiseFeedLength):
 	paddingTagIndex = 9	#out of sentence features will be padded with this character
@@ -516,10 +516,10 @@ def loadDatasetType3(datasetFileNameX, generatePOSunambiguousInput, onlyAddPOSun
 		xPOStagActive = 1
 		xPOStagInactive = 0
 			
-	if(ANNtf2_globalDefs.testHarness):	
+	if(ANNtf_globalDefs.testHarness):	
 		#1 0 0 ... 0 0   0 1 0 ... 0 0 0  0 0 1 ... 0 0 1 			
-		line = np.zeros((ANNtf2_globalDefs.testHarnessNumWords*numberOfFeaturesPerWord), dataType)
-		for w in range(ANNtf2_globalDefs.testHarnessNumWords):
+		line = np.zeros((ANNtf_globalDefs.testHarnessNumWords*numberOfFeaturesPerWord), dataType)
+		for w in range(ANNtf_globalDefs.testHarnessNumWords):
 			line[numberOfFeaturesPerWord*w+w] = xPOStagActive
 		
 		template = [paddingCharacter] * maximumNumFeatures
@@ -686,7 +686,7 @@ def loadDatasetType3(datasetFileNameX, generatePOSunambiguousInput, onlyAddPOSun
 		all_Y = np.ones(datasetNumExamples, dtype=dataType)
 		#all_Y = np.expand_dims(all_Y, axis=0)
 
-	if(ANNtf2_globalDefs.testHarness):
+	if(ANNtf_globalDefs.testHarness):
 		datasetNumExamplesTrain = datasetNumExamples
 		datasetNumExamplesTest = 0
 	else:
@@ -843,7 +843,7 @@ def equaliseClassExamples(xRaw, yRaw):
 	yRawClassFilteredList = []
 	
 	for classIndex in range(1, numberOfClasses+1):
-		xRawClassFiltered, yRawClassFiltered = ANNtf2_operations.filterNParraysByClassTarget(xRaw, yRaw, classTargetFilterIndex=classIndex)
+		xRawClassFiltered, yRawClassFiltered = ANNtf_operations.filterNParraysByClassTarget(xRaw, yRaw, classTargetFilterIndex=classIndex)
 		xRawClassFiltered = xRawClassFiltered[0:classIndexCountMinValue] 
 		yRawClassFiltered = yRawClassFiltered[0:classIndexCountMinValue]
 		xRawClassFilteredList.append(xRawClassFiltered)

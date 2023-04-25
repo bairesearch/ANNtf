@@ -1,4 +1,4 @@
-"""ANNtf2_algorithmANN.py
+"""ANNtf_algorithmANN.py
 
 # Author:
 Richard Bruce Baxter - Copyright (c) 2020-2022 Baxter AI (baxterai.com)
@@ -7,10 +7,10 @@ Richard Bruce Baxter - Copyright (c) 2020-2022 Baxter AI (baxterai.com)
 MIT License
 
 # Installation:
-see ANNtf2.py
+see ANNtf_main.py
 
 # Usage:
-see ANNtf2.py
+see ANNtf_main.py
 
 # Description:
 ANNtf algorithm ANN - define artificial neural network
@@ -19,9 +19,9 @@ ANNtf algorithm ANN - define artificial neural network
 
 import tensorflow as tf
 import numpy as np
-from ANNtf2_operations import *	#generateParameterNameSeq, generateParameterName, defineNetworkParameters
-import ANNtf2_operations
-import ANNtf2_globalDefs
+from ANNtf_operations import *	#generateParameterNameSeq, generateParameterName, defineNetworkParameters
+import ANNtf_operations
+import ANNtf_globalDefs
 
 debugOnlyTrainFinalLayer = False
 debugSingleLayerNetwork = False
@@ -76,9 +76,9 @@ def defineNetworkParameters(num_input_neurons, num_output_neurons, datasetNumFea
 	global numberOfNetworks
 	
 	if(debugSingleLayerNetwork):
-		n_h, numberOfLayers, numberOfNetworks, datasetNumClasses = ANNtf2_operations.defineNetworkParametersANNsingleLayer(num_input_neurons, num_output_neurons, datasetNumFeatures, dataset, numberOfNetworksSet)
+		n_h, numberOfLayers, numberOfNetworks, datasetNumClasses = ANNtf_operations.defineNetworkParametersANNsingleLayer(num_input_neurons, num_output_neurons, datasetNumFeatures, dataset, numberOfNetworksSet)
 	else:
-		n_h, numberOfLayers, numberOfNetworks, datasetNumClasses = ANNtf2_operations.defineNetworkParameters(num_input_neurons, num_output_neurons, datasetNumFeatures, dataset, numberOfNetworksSet, generateLargeNetwork=False)
+		n_h, numberOfLayers, numberOfNetworks, datasetNumClasses = ANNtf_operations.defineNetworkParameters(num_input_neurons, num_output_neurons, datasetNumFeatures, dataset, numberOfNetworksSet, generateLargeNetwork=False)
 	
 	return numberOfLayers
 	

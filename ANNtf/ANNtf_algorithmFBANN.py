@@ -1,4 +1,4 @@
-"""ANNtf2_algorithmFBANN.py
+"""ANNtf_algorithmFBANN.py
 
 # Author:
 Richard Bruce Baxter - Copyright (c) 2020-2022 Baxter AI (baxterai.com)
@@ -7,10 +7,10 @@ Richard Bruce Baxter - Copyright (c) 2020-2022 Baxter AI (baxterai.com)
 MIT License
 
 # Installation:
-see ANNtf2.py
+see ANNtf_main.py
 
 # Usage:
-see ANNtf2.py
+see ANNtf_main.py
 
 # Description:
 ANNtf algorithm FBANN - define feedback artificial neural network
@@ -19,9 +19,9 @@ ANNtf algorithm FBANN - define feedback artificial neural network
 
 import tensorflow as tf
 import numpy as np
-from ANNtf2_operations import *	#generateParameterNameSeq, generateParameterName, defineNetworkParameters
-import ANNtf2_operations
-import ANNtf2_globalDefs
+from ANNtf_operations import *	#generateParameterNameSeq, generateParameterName, defineNetworkParameters
+import ANNtf_operations
+import ANNtf_globalDefs
 import math
 
 
@@ -89,7 +89,7 @@ def defineNetworkParameters(num_input_neurons, num_output_neurons, datasetNumFea
 	global highestLayer
 	global highestLayerWithIncomingBackwardsConnections
 	
-	n_h, numberOfLayers, numberOfNetworks, datasetNumClasses = ANNtf2_operations.defineNetworkParameters(num_input_neurons, num_output_neurons, datasetNumFeatures, dataset, numberOfNetworksSet)
+	n_h, numberOfLayers, numberOfNetworks, datasetNumClasses = ANNtf_operations.defineNetworkParameters(num_input_neurons, num_output_neurons, datasetNumFeatures, dataset, numberOfNetworksSet)
 
 	highestLayer = numberOfLayers
 	highestLayerWithIncomingBackwardsConnections = highestLayer-1

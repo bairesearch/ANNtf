@@ -1,4 +1,4 @@
-"""ANNtf2_algorithmBAANN.py
+"""ANNtf_algorithmBAANN.py
 
 # Author:
 Richard Bruce Baxter - Copyright (c) 2020-2022 Baxter AI (baxterai.com)
@@ -7,10 +7,10 @@ Richard Bruce Baxter - Copyright (c) 2020-2022 Baxter AI (baxterai.com)
 MIT License
 
 # Installation:
-see ANNtf2.py
+see ANNtf_main.py
 
 # Usage:
-see ANNtf2.py
+see ANNtf_main.py
 
 # Description:
 ANNtf algorithm BAANN - define breakaway artificial neural network 
@@ -19,7 +19,7 @@ layers are incrementally trained using class targets
 each layer is fully connected to all previous layers (skip connections)
 network learns to better (more accurately) discriminate the class target based upon more complex inferences performed by higher layers
 based on https://github.com/baxterai/ANN/blob/master/ANN/ANNalgorithmBreakawayNetwork.cpp
-ANNtf2_algorithmBAANN uses keras standard api
+ANNtf_algorithmBAANN uses keras standard api
 
 """
 
@@ -27,8 +27,8 @@ ANNtf2_algorithmBAANN uses keras standard api
 
 import tensorflow as tf
 import numpy as np
-import ANNtf2_operations
-import ANNtf2_globalDefs
+import ANNtf_operations
+import ANNtf_globalDefs
 
 useTFdataset = True	#repeat and shuffle data
 
@@ -71,7 +71,7 @@ def BAANNtrainNetwork(train_x, train_y, test_x, test_y, num_input_neurons, num_o
 	if(useTFdataset):
 		datasetNumExamples = train_x.shape[0]	
 		shuffleSize = datasetNumExamples
-		train_x = ANNtf2_operations.generateTFtrainDataFromNParrays(train_x, train_y, shuffleSize, batchSize)	#CHECKTHIS (is repeat or shuffle required?)
+		train_x = ANNtf_operations.generateTFtrainDataFromNParrays(train_x, train_y, shuffleSize, batchSize)	#CHECKTHIS (is repeat or shuffle required?)
 
 	firstLayer = True
 	model = None
